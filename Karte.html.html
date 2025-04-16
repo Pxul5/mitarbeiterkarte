@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Mitarbeiterkarte Deutschland</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    #map {
+      width: 80%;
+      margin: 20px auto;
+      border: 1px solid #ccc;
+    }
+    .highlight {
+      fill: orange !important;
+    }
+    input, button {
+      padding: 8px;
+      margin: 5px;
+    }
+    .form-container {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Interaktive Mitarbeiterkarte</h1>
+  <input type="text" id="searchInput" placeholder="Name oder PLZ-Anfang suchen...">
+  <button onclick="searchEmployee()">Suchen</button>
+
+  <div id="map">
+    <!-- Beispiel-SVG Deutschlandkarte mit 2 Regionen -->
+    <svg viewBox="0 0 200 300" style="width:100%">
+      <path id="plz70" d="M50,50 L100,50 L100,100 L50,100 Z" fill="#ccc" stroke="#000" />
+      <path id="plz80" d="M110,50 L160,50 L160,100 L110,100 Z" fill="#ccc" stroke="#000" />
+    </svg>
+  </div>
+
+  <div class="form-container">
+    <h2>Mitarbeiter hinzufügen</h2>
+    <input type="text" id="nameInput" placeholder="Name">
+    <input type="text" id="plzInput" placeholder="PLZ-Anfang">
+    <button onclick="addEmployee()">Hinzufügen</button>
+  </div>
+
+  <script>
+    const employees = [
+      { name: "Lisa Müller", plz: "70" },
+      { name: "Tom Schmidt", plz: "80" }
+    ];
+
+    function highlightRegion(plzStart) {
+      document.querySelectorAll("svg path").forEach(el => el.classList.remove("highlight"));
+      const region = document.getElementById("plz" + plzStart);
+      if (region) region.classList.add("highlight");
+    }
+
+    function searchEmployee() {
+      const input = document.getElementById("searchInput").value.trim().toLowerCase();
+      const result = employees.find(emp => emp.name.toLowerCase().includes(input) || emp.plz.startsWith(input));
+
+      if (result) {
+        highlightRegion(result.plz);
+        alert(`Gefunden: ${result.name} (PLZ ${result.plz}...)`);
+      } else {
+        alert("Kein Mitarbeiter gefunden.");
+      }
+    }
+
+    function addEmployee() {
+      const name = document.getElementById("nameInput").value.trim();
+      const plz = document.getElementById("plzInput").value.trim();
+
+      if (name && plz) {
+        employees.push({ name, plz });
+        alert(`Hinzugefügt: ${name} (PLZ ${plz}...)`);
+      } else {
+        alert("Bitte Name und PLZ-Anfang eingeben.");
+      }
+    }
+  </script>
+</body>
+</html>
